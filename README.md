@@ -90,11 +90,11 @@ En webbaserad applikation för att planera och visualisera dagliga personalschem
       - SchemaDisplay.tsx
     /Settings
       - RoomConfig.tsx
-    /Common
-      /ui
+    /ui
       - Header.tsx
       - Button.tsx
       - Modal.tsx
+    /common
   /hooks
     - useLocalStorage.ts
     - useStaff.ts
