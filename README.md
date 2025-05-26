@@ -91,6 +91,7 @@ En webbaserad applikation för att planera och visualisera dagliga personalschem
     /Settings
       - RoomConfig.tsx
     /Common
+      /ui
       - Header.tsx
       - Button.tsx
       - Modal.tsx
