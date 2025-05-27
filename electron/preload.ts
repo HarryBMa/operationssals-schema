@@ -1,24 +1,18 @@
 import { ipcRenderer, contextBridge } from 'electron'
 
 // --------- Expose some API to the Renderer process ---------
-contextBridge.exposeInMainWorld('ipcRenderer', {
-  on(...args: Parameters<typeof ipcRenderer.on>) {
-    const [channel, listener] = args
-    return ipcRenderer.on(channel, (event, ...args) => listener(event, ...args))
+contextBridge.exposeInMainWorld('electron', {
+  send: (channel: string, data?: any) => {
+    ipcRenderer.send(channel, data)
   },
-  off(...args: Parameters<typeof ipcRenderer.off>) {
-    const [channel, ...omit] = args
-    return ipcRenderer.off(channel, ...omit)
+  on: (channel: string, listener: (event: any, ...args: any[]) => void) => {
+    ipcRenderer.on(channel, listener)
   },
-  send(...args: Parameters<typeof ipcRenderer.send>) {
-    const [channel, ...omit] = args
-    return ipcRenderer.send(channel, ...omit)
+  once: (channel: string, listener: (event: any, ...args: any[]) => void) => {
+    ipcRenderer.once(channel, listener)
   },
-  invoke(...args: Parameters<typeof ipcRenderer.invoke>) {
-    const [channel, ...omit] = args
-    return ipcRenderer.invoke(channel, ...omit)
-  },
-
-  // You can expose other APTs you need here.
-  // ...
+  // Add more methods as needed, but never expose Node.js or Electron internals directly
 })
+
+// Example: In renderer, you can use window.electron.send('channel', data)
+// and window.electron.on('channel', (event, ...args) => { ... })

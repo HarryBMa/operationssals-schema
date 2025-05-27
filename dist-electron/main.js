@@ -10,9 +10,17 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 
 let win;
 function createWindow() {
   win = new BrowserWindow({
-    icon: path.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
+    icon: path.join(process.env.APP_ROOT, "src/assets/logo.ico"),
+    // Use your app icon
     webPreferences: {
-      preload: path.join(__dirname, "preload.mjs")
+      preload: path.join(__dirname, "preload.js"),
+      // Use .js for built preload
+      contextIsolation: true,
+      // Security: isolate context
+      nodeIntegration: false,
+      // Security: disable Node.js in renderer
+      sandbox: true
+      // Extra security
     }
   });
   win.webContents.on("did-finish-load", () => {
