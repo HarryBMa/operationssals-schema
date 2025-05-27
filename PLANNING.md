@@ -79,51 +79,68 @@ Build a Swedish Operating Room Staff Scheduling desktop application that runs as
 ## File Structure Guidelines
 ```
 src/
-├── components/          # Feature-organized components (<500 lines each)
-│   ├── Admin/          # Planning interface components
-│   │   ├── StaffSidebar.tsx
-│   │   ├── RoomBoard.tsx
-│   │   ├── StaffCard.tsx
-│   │   ├── RoomCard.tsx
-│   │   ├── ExcelImport.tsx
-│   │   ├── CustomStaffModal.tsx
-│   │   └── Filters.tsx
-│   ├── Dashboard/      # Display mode components
-│   │   └── SchemaDisplay.tsx
-│   ├── Settings/       # Configuration components
-│   │   └── RoomConfig.tsx
-│   ├── ui/            # Reusable UI primitives
-│   │   ├── Header.tsx
-│   │   ├── Button.tsx
-│   │   └── Modal.tsx
-│   └── common/        # Shared utility components
-├── hooks/             # Custom React hooks
-│   ├── useLocalStorage.ts
-│   ├── useStaff.ts
-│   └── useRooms.ts
-├── utils/             # Utility functions
-│   ├── excelParser.ts
-│   ├── dataExport.ts
-│   └── dataImport.ts
-├── types/             # TypeScript definitions
-│   └── index.ts
-├── i18n/              # Swedish localization
-│   └── sv.ts
-├── weekdays/          # Day-specific components
-│   ├── Måndag.tsx
-│   ├── Tisdag.tsx
-│   ├── Onsdag.tsx
-│   ├── Torsdag.tsx
-│   ├── Fredag.tsx
-│   ├── Lördag.tsx
-│   └── Söndag.tsx
-├── App.tsx
-├── main.tsx
-└── index.css
-routes/                # Route-level components
-├── Admin.tsx
-├── Dashboard.tsx
-└── Settings.tsx
+├── main/                    # Electron main process
+│   ├── main.ts             # Main entry point
+│   ├── fileHandler.ts      # Excel import/export via Electron
+│   └── store.ts            # Electron Store setup
+├── renderer/               # React application
+│   ├── routes/            # Route-level page components
+│   │   ├── Admin.tsx      # /admin - Personalplanering
+│   │   ├── Dashboard.tsx  # /tavla - Dagens Schema
+│   │   └── Settings.tsx   # /installningar - Konfiguration
+│   ├── components/        # Feature-organized components (<500 lines each)
+│   │   ├── Admin/         # Planning interface components
+│   │   │   ├── StaffSidebar.tsx    # Staff cards container with filters
+│   │   │   ├── RoomBoard.tsx       # Main drag-drop area with rooms
+│   │   │   ├── StaffCard.tsx       # Draggable staff member card
+│   │   │   ├── RoomCard.tsx        # Drop zone for room assignments
+│   │   │   ├── ExcelImport.tsx     # Excel file import interface
+│   │   │   ├── CustomStaffModal.tsx # Create temp/student staff
+│   │   │   └── Filters.tsx         # Staff filtering (alla, fast, vikarie, student)
+│   │   ├── Dashboard/     # Digital signage display components
+│   │   │   └── SchemaDisplay.tsx   # Read-only schedule display
+│   │   ├── Settings/      # Configuration components
+│   │   │   └── RoomConfig.tsx      # Room count/name configuration
+│   │   ├── Weekdays/      # Day-specific room configurations
+│   │   │   ├── Måndag.tsx          # 4-5 rooms layout
+│   │   │   ├── Tisdag.tsx          # 3 rooms layout
+│   │   │   ├── Onsdag.tsx          # 4-5 rooms layout
+│   │   │   ├── Torsdag.tsx         # 3 rooms layout
+│   │   │   ├── Fredag.tsx          # 4-5 rooms layout
+│   │   │   ├── Lördag.tsx          # Weekend layout (if needed)
+│   │   │   └── Söndag.tsx          # Weekend layout (if needed)
+│   │   ├── ui/            # Reusable UI primitives
+│   │   │   ├── Header.tsx          # App header with navigation
+│   │   │   ├── Button.tsx          # Styled button variants
+│   │   │   └── Modal.tsx           # Modal component wrapper
+│   │   └── common/        # Shared utility components
+│   │       ├── LoadingSpinner.tsx
+│   │       ├── ErrorBoundary.tsx
+│   │       └── Layout.tsx
+│   ├── hooks/             # Custom React hooks
+│   │   ├── useLocalStorage.ts      # Electron Store integration
+│   │   ├── useStaff.ts            # Staff management logic
+│   │   ├── useRooms.ts            # Room configuration logic
+│   │   └── useDragDrop.ts         # Drag & drop state management
+│   ├── stores/            # State management
+│   │   ├── staffStore.ts          # Zustand store for staff data
+│   │   ├── roomStore.ts           # Room assignments & configuration
+│   │   └── appStore.ts            # Global app state
+│   ├── utils/             # Utility functions
+│   │   ├── excelParser.ts         # Parse Excel files to Staff objects
+│   │   ├── dataExport.ts          # Export schedules (JSON/PDF backup)
+│   │   ├── dataImport.ts          # Import from various formats
+│   │   └── dateHelpers.ts         # Swedish date formatting
+│   ├── types/             # TypeScript definitions
+│   │   └── index.ts               # All interfaces and enums
+│   ├── i18n/              # Swedish localization
+│   │   └── sv.ts                  # Swedish labels and text
+│   ├── App.tsx            # Main app component with routing
+│   ├── main.tsx           # React entry point
+│   └── index.css          # Tailwind CSS imports
+└── shared/                # Shared between main and renderer
+    ├── types.ts           # IPC communication types
+    └── constants.ts       # App-wide constants
 ```
 
 ## Development Workflow Rules

@@ -41,10 +41,11 @@
 ## 📋 Backlog (Prioritized)
 
 ### Core Features - Must Have
-- [ ] **File System Integration**
+- [x] **File System Integration**
   - Save/load schedule files via Electron File API
   - Auto-backup functionality
   - File association for .ops files (custom format)
+  - **Completed**: May 27, 2025
 
 - [ ] **Advanced Staff Management**
   - Edit existing staff information
@@ -122,8 +123,8 @@
 - [x] React component complete
 - [x] Electron main process configured
 - [x] Drag-and-drop refinement complete
-- [ ] Portable executable builds successfully
-- [ ] Basic testing on restricted work PC
+- [x] Portable executable builds successfully
+- [x] Basic testing on restricted work PC
 
 ### Milestone 2: Production Ready (Target: End of Week 2)
 - [ ] All core features implemented and tested
@@ -177,3 +178,9 @@ When working on tasks:
 
 **Last Updated**: May 27, 2025
 **Next Review**: After portable executable configuration
+
+## 🔍 Discovered During Work (May 27, 2025)
+- [ ] Add integration of ExcelImport into AdminPage and connect imported data to staff state
+- [ ] Add UI for displaying localStorage quota errors to user
+- [ ] Refactor tests to use real Excel file mocks for ExcelImport
+- [ ] Add more robust file validation for .xls vs .xlsx

@@ -9,6 +9,8 @@ electron.contextBridge.exposeInMainWorld("electron", {
   },
   once: (channel, listener) => {
     electron.ipcRenderer.once(channel, listener);
-  }
+  },
+  saveSchedule: (data) => electron.ipcRenderer.invoke("save-schedule", data),
+  loadSchedule: () => electron.ipcRenderer.invoke("load-schedule")
   // Add more methods as needed, but never expose Node.js or Electron internals directly
 });

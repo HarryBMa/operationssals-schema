@@ -11,6 +11,8 @@ contextBridge.exposeInMainWorld('electron', {
   once: (channel: string, listener: (event: any, ...args: any[]) => void) => {
     ipcRenderer.once(channel, listener)
   },
+  saveSchedule: (data: any) => ipcRenderer.invoke('save-schedule', data),
+  loadSchedule: () => ipcRenderer.invoke('load-schedule'),
   // Add more methods as needed, but never expose Node.js or Electron internals directly
 })
 

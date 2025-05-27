@@ -2,4 +2,4 @@ win:
   target: "portable"
   icon: "src/assets/logo.ico"
 portable:
-  artifactName: "OperationssalsPersonalschema-Portable.exe"
+  artifactName: "Tavlan.exe"

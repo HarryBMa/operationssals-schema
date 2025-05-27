@@ -1,6 +1,7 @@
-import { app, BrowserWindow } from "electron";
+import { ipcMain, dialog, app, BrowserWindow } from "electron";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import fs from "fs";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 process.env.APP_ROOT = path.join(__dirname, "..");
 const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
@@ -32,6 +33,40 @@ function createWindow() {
     win.loadFile(path.join(RENDERER_DIST, "index.html"));
   }
 }
+ipcMain.handle("save-schedule", async (_event, data) => {
+  const { canceled, filePath } = await dialog.showSaveDialog({
+    title: "Spara schema",
+    filters: [
+      { name: "Operationsschema", extensions: ["ops", "json"] }
+    ],
+    defaultPath: "schema.ops"
+  });
+  if (canceled || !filePath) return { success: false };
+  try {
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8");
+    return { success: true, filePath };
+  } catch (err) {
+    const errorMsg = err instanceof Error ? err.message : String(err);
+    return { success: false, error: errorMsg };
+  }
+});
+ipcMain.handle("load-schedule", async () => {
+  const { canceled, filePaths } = await dialog.showOpenDialog({
+    title: "Öppna schema",
+    filters: [
+      { name: "Operationsschema", extensions: ["ops", "json"] }
+    ],
+    properties: ["openFile"]
+  });
+  if (canceled || !filePaths[0]) return { success: false };
+  try {
+    const content = fs.readFileSync(filePaths[0], "utf-8");
+    return { success: true, data: JSON.parse(content), filePath: filePaths[0] };
+  } catch (err) {
+    const errorMsg = err instanceof Error ? err.message : String(err);
+    return { success: false, error: errorMsg };
+  }
+});
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
