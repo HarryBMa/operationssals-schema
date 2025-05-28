@@ -1,4 +1,4 @@
-import { ipcMain, dialog, app, BrowserWindow } from "electron";
+import { ipcMain, dialog, app, BrowserWindow, globalShortcut } from "electron";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import fs from "fs";
@@ -12,7 +12,14 @@ let win;
 function createWindow() {
   win = new BrowserWindow({
     icon: path.join(process.env.APP_ROOT, "src/assets/logo.ico"),
-    // Use your app icon
+    fullscreen: true,
+    // Kiosk-like fullscreen
+    kiosk: true,
+    // Prevents taskbar and user from leaving app
+    autoHideMenuBar: true,
+    // Hide menu bar
+    skipTaskbar: true,
+    // Hide from Windows taskbar
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       // Use .js for built preload
@@ -22,6 +29,13 @@ function createWindow() {
       // Security: disable Node.js in renderer
       sandbox: true
       // Extra security
+    }
+  });
+  globalShortcut.register("esc", () => {
+    if (win) {
+      win.setKiosk(false);
+      win.setFullScreen(false);
+      win.setMenuBarVisibility(true);
     }
   });
   win.webContents.on("did-finish-load", () => {
@@ -79,6 +93,9 @@ app.on("activate", () => {
   }
 });
 app.whenReady().then(createWindow);
+app.on("will-quit", () => {
+  globalShortcut.unregisterAll();
+});
 export {
   MAIN_DIST,
   RENDERER_DIST,

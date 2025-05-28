@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, dialog } from 'electron'
+import { app, BrowserWindow, ipcMain, dialog, globalShortcut } from 'electron'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import fs from 'fs'
@@ -27,13 +27,26 @@ let win: BrowserWindow | null
 
 function createWindow() {
   win = new BrowserWindow({
-    icon: path.join(process.env.APP_ROOT, 'src/assets/logo.ico'), // Use your app icon
+    icon: path.join(process.env.APP_ROOT, 'src/assets/logo.ico'),
+    fullscreen: true, // Kiosk-like fullscreen
+    kiosk: true, // Prevents taskbar and user from leaving app
+    autoHideMenuBar: true, // Hide menu bar
+    skipTaskbar: true, // Hide from Windows taskbar
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'), // Use .js for built preload
       contextIsolation: true, // Security: isolate context
       nodeIntegration: false, // Security: disable Node.js in renderer
       sandbox: true, // Extra security
     },
+  })
+
+  // Register a global shortcut to exit kiosk mode (Ctrl+Alt+K)
+  globalShortcut.register('esc', () => {
+    if (win) {
+      win.setKiosk(false)
+      win.setFullScreen(false)
+      win.setMenuBarVisibility(true)
+    }
   })
 
   // Test active push message to Renderer-process.
@@ -106,3 +119,7 @@ app.on('activate', () => {
 })
 
 app.whenReady().then(createWindow)
+
+app.on('will-quit', () => {
+  globalShortcut.unregisterAll()
+})
